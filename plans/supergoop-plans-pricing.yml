@@ -1,0 +1,22 @@
+generated: '2026-08-29'
+method: searched
+source: https://supergoop.com/
+description: >-
+  Supergoop! sells sunscreen, not API access. There is no developer plan, no
+  paid tier, no free tier and no quota attached to any of its machine surfaces:
+  the UCP MCP server and the Storefront GraphQL API are open to anonymous
+  callers at no charge, and no page on supergoop.com offers or prices API
+  access.
+plan_count: 0
+plans: []
+pricing_url: null
+searched:
+  - {url: 'https://supergoop.com/', status: 200, note: retail storefront; no developer or API pricing anywhere in navigation}
+  - {url: 'https://supergoop.com/llms.txt', status: 200, note: describes the agent surfaces; states no cost, quota or commercial terms}
+  - {url: 'https://supergoop.com/.well-known/ucp', status: 200, note: capability profile only; no commercial terms}
+  - {url: 'https://supergoop.com/pages/faq-help', status: 200, note: consumer help centre; no developer or API section}
+note: >-
+  Product retail prices ARE machine-readable (Storefront GraphQL priceRange, UCP
+  catalog search) but those are the goods being sold, not the price of the API.
+  Recording them as plans would be a category error, so plan_count is an honest
+  zero.

@@ -1,0 +1,113 @@
+generated: '2026-08-29'
+method: derived
+source: >-
+  graphql/supergoop-storefront-2026-07.graphql ;
+  mcp/supergoop-ucp-mcp-tools-list.json ;
+  examples/supergoop-storefront-graphql-products-response.json
+description: >-
+  Entity graph for the Supergoop! commerce surfaces, derived from the live
+  GraphQL SDL and the UCP tool schemas. There is no OpenAPI to derive $ref links
+  from, so relationships are read from GraphQL field types and from the
+  identifier fields the UCP tools require.
+identifier_scheme:
+  form: 'gid://shopify/{Type}/{id}'
+  examples:
+    - 'gid://shopify/Product/112965845008'
+    - 'gid://shopify/ProductVariant/731856470032'
+    - 'gid://shopify/Checkout/abc123'
+  secondary: >-
+    Stable URL slugs (`handle`) on Product, Collection, Blog, Article and Page —
+    the identifier a human-readable storefront URL is built from.
+entities:
+  - name: Shop
+    surface: [graphql]
+    description: The store itself — name, description, primary domain, payment settings, policies.
+    key_fields: [name, description, primaryDomain, paymentSettings, shipsToCountries]
+  - name: Product
+    surface: [graphql, ucp]
+    description: A sellable item in the Supergoop! catalog.
+    key_fields: [id, title, handle, productType, vendor, tags, description, priceRange, featuredImage, availableForSale]
+  - name: ProductVariant
+    surface: [graphql, ucp]
+    description: A purchasable size/shade/format of a product; carries the SKU and the price actually charged.
+    key_fields: [id, title, sku, price, compareAtPrice, availableForSale, quantityAvailable, selectedOptions]
+  - name: Collection
+    surface: [graphql, ucp]
+    description: A merchandised grouping of products.
+    key_fields: [id, title, handle, description, image]
+  - name: Cart
+    surface: [graphql, ucp]
+    description: A pre-checkout basket of lines with buyer identity, discounts and delivery selections.
+    key_fields: [id, lines, cost, buyerIdentity, discountCodes, deliveryGroups, note, attributes]
+  - name: CartLine
+    surface: [graphql, ucp]
+    description: One quantity of one variant inside a cart.
+    key_fields: [id, quantity, merchandise, cost, discountAllocations]
+  - name: Checkout
+    surface: [ucp]
+    description: >-
+      A first-class UCP resource covering totals, taxes, discounts, fulfilment
+      selection and payment. It has no direct equivalent on the current
+      Storefront GraphQL schema, where the same job is done by cart preparation
+      and submission.
+    key_fields: [id, line_items, totals, discounts, taxes, fulfillment, payment]
+  - name: Order
+    surface: [ucp]
+    description: The completed purchase. Readable only with a JWT.
+    key_fields: [id, status, line_items, totals, fulfillment]
+  - name: Customer
+    surface: [graphql, oidc]
+    description: A shopper account, reachable with a customer access token or an OIDC session.
+    key_fields: [id, email, firstName, lastName, defaultAddress, addresses]
+  - name: MailingAddress
+    surface: [graphql, ucp]
+    description: A shipping or billing address.
+    key_fields: [id, address1, address2, city, provinceCode, countryCodeV2, zip, phone]
+  - name: Blog
+    surface: [graphql]
+    key_fields: [id, title, handle, articles]
+  - name: Article
+    surface: [graphql]
+    key_fields: [id, title, handle, content, publishedAt, author, blog]
+  - name: Page
+    surface: [graphql]
+    key_fields: [id, title, handle, body]
+  - name: Metaobject
+    surface: [graphql]
+    description: Custom structured content the store defines for itself.
+    key_fields: [id, type, handle, fields]
+relationships:
+  - {from: Shop, to: Collection, type: has_many, via: collections}
+  - {from: Shop, to: Product, type: has_many, via: products}
+  - {from: Shop, to: Blog, type: has_many, via: blogs}
+  - {from: Shop, to: Page, type: has_many, via: pages}
+  - {from: Collection, to: Product, type: has_many, via: products}
+  - {from: Product, to: ProductVariant, type: has_many, via: variants}
+  - {from: Product, to: Collection, type: has_many, via: collections}
+  - {from: ProductVariant, to: Product, type: belongs_to, via: product}
+  - {from: Cart, to: CartLine, type: has_many, via: lines}
+  - {from: CartLine, to: ProductVariant, type: has_one, via: merchandise}
+  - {from: Cart, to: Customer, type: has_one, via: buyerIdentity.customer}
+  - {from: Cart, to: MailingAddress, type: has_many, via: delivery.addresses}
+  - {from: Checkout, to: Cart, type: has_one, via: cart id}
+  - {from: Checkout, to: Order, type: has_one, via: complete_checkout result order id}
+  - {from: Order, to: Customer, type: belongs_to, via: buyer identity}
+  - {from: Customer, to: MailingAddress, type: has_many, via: addresses}
+  - {from: Blog, to: Article, type: has_many, via: articles}
+  - {from: Article, to: Blog, type: belongs_to, via: blog}
+money_representation:
+  graphql: 'decimal string + currency code, e.g. {"amount": "20.0", "currencyCode": "USD"}'
+  ucp: 'integer minor units + currency code, e.g. {"amount": 2000, "currency": "USD"}'
+  warning: The two surfaces represent money differently; do not share a parser between them.
+observed_taxonomy:
+  productType_values_seen: [Face]
+  tag_namespaces_seen:
+    - 'Body Part:'
+    - 'Finish:'
+    - 'Preferences:'
+    - 'YGroup_'
+    - ActiveSKU
+  note: >-
+    Read from a live three-product sample
+    (examples/supergoop-storefront-graphql-products-response.json), not from a
+    published taxonomy — Supergoop! publishes no object reference.

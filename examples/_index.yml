@@ -1,0 +1,39 @@
+generated: '2026-08-29'
+method: probed
+source: live responses from supergoop.com, 2026-08-29
+description: >-
+  Real request/response captures from Supergoop!'s machine surfaces. Every file
+  is a verbatim response body, saved as returned — success shapes and error
+  shapes both, because Supergoop! publishes no reference an agent could read
+  instead.
+examples:
+  - file: examples/supergoop-storefront-graphql-products-response.json
+    surface: Storefront GraphQL
+    request: 'POST https://supergoop.com/api/2026-07/graphql.json — shop + products(first:3) with variants'
+    status: 200
+    shows: >-
+      Success envelope, Relay edges/node shape, gid:// identifiers, namespaced
+      merchandising tags, and money as a decimal string.
+  - file: examples/supergoop-products-json-response.json
+    surface: storefront JSON
+    request: 'GET https://supergoop.com/products.json?limit=2'
+    status: 200
+    shows: The anonymous, no-auth product feed the llms.txt points read-only agents at.
+  - file: examples/supergoop-ucp-mcp-error-profile-unreachable.json
+    surface: UCP shopping MCP
+    request: 'POST https://supergoop.com/api/ucp/mcp — tools/call search_catalog with an unfetchable agent profile'
+    status: 422
+    shows: 'JSON-RPC error -32001, data.code profile_unreachable, and the continue_url human-handoff field.'
+  - file: examples/supergoop-ucp-mcp-error-authentication-required.json
+    surface: UCP shopping MCP
+    request: 'POST https://supergoop.com/api/ucp/mcp — tools/call get_order, anonymous'
+    status: 403
+    shows: 'JSON-RPC error -32000 AuthenticationRequired, with the JWT documentation pointer in data.'
+  - file: mcp/supergoop-ucp-mcp-tools-list.json
+    surface: UCP shopping MCP
+    request: 'POST https://supergoop.com/api/ucp/mcp — tools/list, anonymous'
+    status: 200
+    shows: All 13 tools with complete JSON Schema draft 2020-12 inputSchemas.
+note: >-
+  No purchase was attempted and no cart or checkout was created. Every capture
+  above is a read or a deliberately-failed call.

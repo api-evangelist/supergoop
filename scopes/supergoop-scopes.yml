@@ -1,0 +1,39 @@
+generated: '2026-08-29'
+method: probed
+source: https://supergoop.com/.well-known/openid-configuration
+description: >-
+  The only scope surface Supergoop! exposes is the scopes_supported list on its
+  customer-accounts OIDC discovery document, served from supergoop.com and backed
+  by the Shopify-hosted authorization server for shop 15035658. There is no
+  developer-facing OAuth app registration and no published scope reference page,
+  so this list is the whole of it.
+authorization_server: https://shopify.com/authentication/15035658
+discovery: https://supergoop.com/.well-known/openid-configuration
+grant_types: [authorization_code, refresh_token, 'urn:ietf:params:oauth:grant-type:jwt-bearer']
+pkce_methods: [S256]
+scope_count: 4
+scopes:
+  - name: openid
+    description: Standard OIDC scope; requests an ID token for the signed-in shopper.
+    standard: true
+  - name: email
+    description: Releases the shopper's email and email_verified claims.
+    standard: true
+  - name: customer-account-api:full
+    description: >-
+      Full access to the Shopify Customer Account API for the signed-in shopper —
+      orders, addresses, subscriptions and profile for that customer only.
+    standard: false
+  - name: customer-account-mcp-api:full
+    description: >-
+      Full access to the customer-account MCP API. This is the scope an agent
+      acting for a signed-in shopper would hold; it is the credential path behind
+      the get_order tool on the UCP MCP server, which returns
+      AuthenticationRequired when called anonymously.
+    standard: false
+claims_supported: [iss, sub, aud, exp, iat, nonce, sid, email, email_verified]
+docs: null
+docs_note: >-
+  Supergoop! publishes no scope reference. Scope semantics are documented by the
+  platform at https://shopify.dev/docs/api/customer, which is Shopify's page, not
+  Supergoop!'s — recorded here rather than cited as a provider document.

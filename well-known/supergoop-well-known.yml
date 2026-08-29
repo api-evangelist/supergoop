@@ -1,0 +1,73 @@
+generated: '2026-08-29'
+method: probed
+source: https://supergoop.com/.well-known/
+description: >-
+  Well-known probe of every host Supergoop! serves. supergoop.com answers real
+  documents on the OAuth/OIDC discovery paths (its customer accounts are backed
+  by a Shopify-hosted authorization server) and on a non-standard but
+  load-bearing /.well-known/ucp path that advertises the store's Universal
+  Commerce Protocol profile. security.txt, api-catalog and ai-plugin.json all
+  404 with the storefront's HTML 404 page.
+hosts:
+  - host: supergoop.com
+    documents:
+      - path: /.well-known/ucp
+        status: 200
+        file: well-known/supergoop-ucp.json
+        content_type: application/json
+        note: >-
+          UCP merchant profile — supported versions (2026-08-25, 2026-04-08,
+          2026-01-23), the dev.ucp.shopping MCP endpoint, eight capabilities and
+          the com.google.pay payment handler. Not an IANA-registered well-known
+          name; registered by the UCP specification at https://ucp.dev.
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        file: well-known/supergoop-oauth-authorization-server.json
+        content_type: application/json
+        note: RFC 8414 metadata; issuer https://shopify.com/authentication/15035658
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        file: well-known/supergoop-oauth-protected-resource.json
+        content_type: application/json
+        note: RFC 9728 metadata; resource https://supergoop.com
+      - path: /.well-known/openid-configuration
+        status: 200
+        file: well-known/supergoop-openid-configuration.json
+        content_type: application/json
+        note: byte-identical to the oauth-authorization-server document
+      - path: /.well-known/apple-app-site-association
+        status: 200
+        file: null
+        content_type: application/json
+        note: >-
+          Served but empty ({"applinks":{"apps":[],"details":[]},...}) — no
+          associated app domains declared, so nothing worth saving.
+      - path: /.well-known/security.txt
+        status: 404
+        file: null
+      - path: /.well-known/api-catalog
+        status: 404
+        file: null
+      - path: /.well-known/ai-plugin.json
+        status: 404
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 404
+        file: null
+      - path: /.well-known/agent.json
+        status: 404
+        file: null
+  - host: supergoop.myshopify.com
+    documents:
+      - path: /.well-known/ucp
+        status: 301
+        file: null
+        note: >-
+          The myshopify.com canonical host 301s /.well-known/ucp; the primary
+          domain supergoop.com serves the document. The UCP profile itself names
+          supergoop.myshopify.com as the MCP endpoint host.
+adjacent_agent_documents:
+  - {url: 'https://supergoop.com/llms.txt', status: 200, file: llms/supergoop-llms.txt}
+  - {url: 'https://supergoop.com/agents.md', status: 200, file: llms/supergoop-agents.md}
+  - {url: 'https://supergoop.com/robots.txt', status: 200, file: null, note: names /agents.md, /.well-known/ucp and /api/ucp/mcp in comments}
+  - {url: 'https://supergoop.com/sitemap_agentic_discovery.xml', status: 200, file: null}

@@ -1,0 +1,142 @@
+generated: '2026-08-29'
+method: probed
+source: >-
+  https://supergoop.com/.well-known/ucp ; .well-known/openid-configuration ;
+  .well-known/oauth-authorization-server ; .well-known/oauth-protected-resource ;
+  https://supergoop.com/api/ucp/mcp ; https://supergoop.com/api/2026-07/graphql.json
+description: >-
+  Cross-cutting and domain standards Supergoop!'s surfaces actually declare or
+  demonstrably implement. Every `conforms: true` below is backed by a document or
+  a live response, not by a marketing claim — Supergoop! makes no standards
+  claims in prose anywhere.
+standards:
+  - id: mcp
+    name: Model Context Protocol
+    conforms: true
+    evidence: >-
+      POST https://supergoop.com/api/ucp/mcp with
+      {"jsonrpc":"2.0","id":1,"method":"tools/list"} returned HTTP 200 and a
+      well-formed JSON-RPC result with 13 tools, each carrying an inputSchema.
+      Saved verbatim to mcp/supergoop-ucp-mcp-tools-list.json.
+  - id: jsonrpc-2.0
+    name: JSON-RPC 2.0
+    conforms: true
+    evidence: Both success and error responses on /api/ucp/mcp carry jsonrpc "2.0", id, and result or error{code,message,data}.
+  - id: json-schema-2020-12
+    name: JSON Schema draft 2020-12
+    conforms: true
+    evidence: >-
+      Every one of the 13 MCP tool inputSchemas declares
+      "$schema": "https://json-schema.org/draft/2020-12/schema".
+  - id: graphql
+    name: GraphQL (June 2018 spec, Relay connection conventions)
+    conforms: true
+    evidence: >-
+      Full introspection at https://supergoop.com/api/2026-07/graphql.json
+      returned 428 types including Relay-style Connection/Edge/PageInfo types;
+      SDL saved to graphql/supergoop-storefront-2026-07.graphql.
+  - id: oidc
+    name: OpenID Connect Discovery 1.0
+    conforms: true
+    evidence: >-
+      https://supergoop.com/.well-known/openid-configuration returned HTTP 200
+      with issuer, authorization_endpoint, token_endpoint, jwks_uri,
+      response_types_supported, subject_types_supported and
+      id_token_signing_alg_values_supported.
+  - id: oauth2
+    name: OAuth 2.0
+    conforms: true
+    evidence: authorization_code and refresh_token grants with S256 PKCE declared in the discovery document.
+  - id: rfc8414
+    name: 'RFC 8414: OAuth 2.0 Authorization Server Metadata'
+    conforms: true
+    evidence: https://supergoop.com/.well-known/oauth-authorization-server returned HTTP 200 with conformant metadata.
+  - id: rfc9728
+    name: 'RFC 9728: OAuth 2.0 Protected Resource Metadata'
+    conforms: true
+    evidence: >-
+      https://supergoop.com/.well-known/oauth-protected-resource returned
+      {"resource":"https://supergoop.com","authorization_servers":[...],
+      "bearer_methods_supported":["header"]}.
+  - id: rfc7519
+    name: 'RFC 7519: JSON Web Token'
+    conforms: true
+    evidence: >-
+      The MCP server rejects anonymous order reads with "A valid JWT is required
+      to call get_order" (examples/supergoop-ucp-mcp-error-authentication-required.json).
+  - id: idempotency
+    name: Idempotent write semantics
+    conforms: true
+    partial: true
+    evidence: >-
+      complete_checkout requires meta['idempotency-key']; no other write tool
+      declares one. See conventions/supergoop-conventions.yml.
+  - id: pagination
+    name: Cursor pagination
+    conforms: true
+    evidence: UCP catalog search returns pagination.cursor; GraphQL uses Relay first/after + pageInfo.
+  - id: rfc9457
+    name: 'RFC 9457: Problem Details for HTTP APIs'
+    conforms: false
+    evidence: >-
+      No application/problem+json response was returned by either surface;
+      errors are JSON-RPC error objects and GraphQL errors[] arrays.
+  - id: rfc9116
+    name: 'RFC 9116: security.txt'
+    conforms: false
+    evidence: https://supergoop.com/.well-known/security.txt returned HTTP 404.
+  - id: rfc9421
+    name: 'RFC 9421: HTTP Message Signatures'
+    conforms: false
+    evidence: No signature-based agent authentication is offered; UCP identifies agents by a fetchable profile URI instead.
+  - id: a2a
+    name: A2A Agent Card
+    conforms: false
+    evidence: >-
+      /.well-known/agent-card.json and /.well-known/agent.json both returned
+      HTTP 404 (themed storefront HTML) on supergoop.com.
+  - id: openapi
+    name: OpenAPI
+    conforms: false
+    evidence: >-
+      /openapi.json, /openapi.yaml, /swagger.json and /api-docs all 404 or
+      return the storefront HTML shell. No OpenAPI is published.
+domain_standard:
+  id: ucp
+  name: Universal Commerce Protocol (UCP)
+  market: retail / agentic commerce
+  conforms: true
+  declared_in_contract: true
+  spec: https://ucp.dev
+  evidence: >-
+    https://supergoop.com/.well-known/ucp (HTTP 200, application/json) declares
+    ucp.version 2026-08-25, three supported protocol versions each with their own
+    profile URL, the dev.ucp.shopping service bound to transport "mcp" at
+    https://supergoop.myshopify.com/api/ucp/mcp with schema
+    https://ucp.dev/2026-08-25/services/shopping/mcp.openrpc.json, and eight
+    named capabilities. The MCP server echoes the negotiated version in the
+    x-shopify-ucp-mcp-api-version response header, and search_catalog's own
+    description states "Response conforms to the UCP catalog search capability
+    (dev.ucp.shopping.catalog.search)".
+  capabilities:
+    - dev.ucp.shopping.cart
+    - dev.ucp.shopping.checkout
+    - dev.ucp.shopping.fulfillment
+    - dev.ucp.shopping.discount
+    - dev.ucp.shopping.order
+    - dev.ucp.shopping.catalog.search
+    - dev.ucp.shopping.catalog.lookup
+    - dev.shopify.catalog
+  payment_handlers:
+    - {id: gpay, name: com.google.pay, version: '2026-01-11', spec: 'https://pay.google.com/gp/p/ucp/2026-01-11/'}
+  note: >-
+    This is the buyer-relevant distinction: an agent that already speaks UCP can
+    search, cart and check out at supergoop.com with no bespoke connector. The
+    conformance is inherited from the Shopify platform rather than authored by
+    Supergoop!, but it is declared in Supergoop!'s own contract on Supergoop!'s
+    own domain.
+compliance_certifications:
+  published: false
+  note: >-
+    Supergoop! publishes no SOC 2, ISO 27001, PCI DSS or other certification
+    claim on any page probed. No Compliance pointer is emitted.

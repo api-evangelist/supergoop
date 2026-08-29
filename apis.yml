@@ -1,23 +1,140 @@
 aid: supergoop
-name: Supergoop
-description: 'Supergoop is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+name: Supergoop!
+description: >-
+  Supergoop! is a prestige suncare brand founded in 2005 by Holly Thaggard and
+  headquartered in San Antonio, Texas, selling SPF-first skincare, body, makeup
+  and kids products direct-to-consumer at supergoop.com and through retail
+  partners; Blackstone Growth took a majority stake in 2021 at a reported $600-700
+  million valuation. It is not a software company and runs no developer program,
+  but its Shopify storefront exposes three live, anonymous machine surfaces on its
+  own domain: a Universal Commerce Protocol (UCP) shopping MCP server at
+  /api/ucp/mcp with 13 tools, a fully introspectable Storefront GraphQL API at
+  /api/2026-07/graphql.json with 428 types, and agent-facing instructions at
+  /agents.md and /llms.txt that publish the discovery paths, the six-step agent
+  purchase flow and a hard human-approval rule on payment.
+image: https://supergoop.com/cdn/shop/files/logo_desktop.svg
 url: https://raw.githubusercontent.com/api-evangelist/supergoop/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment
 specificationVersion: '0.20'
 created: '2026-08-29'
 modified: '2026-08-29'
 tags:
 - Company
-apis: []
+- Sunscreen
+- Skincare
+- Beauty
+- Cosmetics
+- Consumer Goods
+- Retail
+- E-Commerce
+- Direct to Consumer
+- Shopify
+- Agentic Commerce
+- Universal Commerce Protocol
+- Model Context Protocol
+- GraphQL
+apis:
+- name: Supergoop! UCP Shopping MCP Server
+  description: >-
+    A live remote Model Context Protocol server implementing the Universal
+    Commerce Protocol dev.ucp.shopping service for the Supergoop! store. An
+    anonymous tools/list returns 13 tools with full JSON Schema inputSchemas
+    covering catalog search and lookup, cart, checkout and order retrieval.
+    Catalog and cart calls require a fetchable UCP agent profile URI; order calls
+    require a JWT; completing a checkout requires an idempotency key and explicit
+    human payment approval.
+  humanURL: https://supergoop.com/agents.md
+  baseURL: https://supergoop.com/api/ucp/mcp
+  tags:
+  - MCP
+  - Agentic Commerce
+  - Universal Commerce Protocol
+  - Shopping
+  - Checkout
+  properties:
+  - type: Documentation
+    url: https://supergoop.com/agents.md
+- name: Supergoop! Storefront GraphQL API
+  description: >-
+    The Shopify Storefront GraphQL API as served for supergoop.com. Introspection
+    is open and anonymous, returning 428 types, 34 root query fields and 41
+    mutations covering products, collections, search, blogs, pages, menus,
+    localization, cart lifecycle and customer accounts. Query cost is returned
+    inline on every response as extensions.cost.
+  humanURL: https://supergoop.com/agents.md
+  baseURL: https://supergoop.com/api/2026-07/graphql.json
+  tags:
+  - GraphQL
+  - Catalog
+  - Products
+  - Cart
+  - E-Commerce
+  properties:
+  - type: GraphQL
+    url: graphql/supergoop-storefront-2026-07.graphql
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/supergoop-domain-security.yml
 - type: Website
+  url: https://supergoop.com/
+- type: Documentation
+  url: https://supergoop.com/agents.md
+- type: Support
+  url: https://supergoop.com/pages/faq-help
+- type: SignUp
+  url: https://supergoop.com/account/register
+- type: Login
+  url: https://supergoop.com/account/login
+- type: TermsOfService
+  url: https://supergoop.com/policies/terms-of-service
+- type: PrivacyPolicy
+  url: https://supergoop.com/policies/privacy-policy
+- type: GitHubOrganization
+  url: https://github.com/supergoop
+- type: SecondaryMarketListing
   url: https://www.hiive.com/securities/supergoop-stock
+- type: LLMsTxt
+  url: llms/supergoop-llms.txt
+- type: WellKnown
+  url: well-known/supergoop-well-known.yml
+- type: Authentication
+  url: authentication/supergoop-authentication.yml
+- type: OAuthScopes
+  url: scopes/supergoop-scopes.yml
+- type: ErrorCatalog
+  url: errors/supergoop-problem-types.yml
+- type: RateLimits
+  url: rate-limits/supergoop-rate-limits.yml
+- type: MCPServer
+  url: mcp/supergoop-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/supergoop-tool-crosswalk.yml
+- type: Conventions
+  url: conventions/supergoop-conventions.yml
+- type: Idempotency
+  url: conventions/supergoop-conventions.yml
+- type: Lifecycle
+  url: lifecycle/supergoop-lifecycle.yml
+- type: Conformance
+  url: conformance/supergoop-conformance.yml
+- type: DataModel
+  url: data-model/supergoop-data-model.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Examples
+  url: examples/_index.yml
+- type: Plans
+  url: plans/supergoop-plans-pricing.yml
+x-enrichment:
+  date: '2026-08-29'
+  status: enriched
+  artifacts_added: 32
+  pass: local-v1

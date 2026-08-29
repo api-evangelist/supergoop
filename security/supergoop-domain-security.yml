@@ -1,0 +1,17 @@
+generated: '2026-08-29'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: supergoop.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov 16 03:13:01 2026 GMT
+  hsts: true
+  hsts_max_age: 7889238
+domains:
+- domain: supergoop.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: quarantine

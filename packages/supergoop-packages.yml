@@ -1,0 +1,26 @@
+generated: '2026-08-29'
+method: searched
+source: >-
+  registry.npmjs.org search ; pypi.org ; api.github.com/orgs/supergoop ;
+  https://supergoop.com/agents.md
+description: >-
+  Supergoop! publishes no client libraries. This is an honest zero recorded
+  after searching every registry the pipeline checks, not an unattempted step.
+package_count: 0
+packages: []
+searched:
+  - {registry: npm, query: supergoop, results: 0, url: 'https://registry.npmjs.org/-/v1/search?text=supergoop', status: 200}
+  - {registry: pypi, package: supergoop, status: 404, url: 'https://pypi.org/pypi/supergoop/json'}
+  - {registry: github, org: supergoop, status: 200, url: 'https://api.github.com/orgs/supergoop', public_repos: 0, note: 'the org exists (created 2019-06-17, name "Supergoop!", blog https://supergoop.com) but publishes zero public repositories'}
+  - {registry: docs, url: 'https://supergoop.com/agents.md', status: 200, note: 'names no SDK; recommends the third-party cross-store Shop skill at https://shop.app/SKILL.md'}
+not_first_party:
+  - name: '@shopify/storefront-api-client'
+    registry: npm
+    reason: >-
+      Shopify's own client for the Storefront GraphQL API would work against
+      supergoop.com, but it is Shopify's package, not Supergoop!'s. Recorded here
+      so a reader is not left thinking nothing can call this API; deliberately
+      NOT listed as a Supergoop! package and NOT counted in package_count.
+note: >-
+  No SDKs pointer is emitted in apis.yml, because there is no first-party SDK to
+  point at.

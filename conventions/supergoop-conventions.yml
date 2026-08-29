@@ -1,0 +1,167 @@
+generated: '2026-08-29'
+method: probed
+source: >-
+  https://supergoop.com/llms.txt ; https://supergoop.com/agents.md ;
+  https://supergoop.com/robots.txt ; mcp/supergoop-ucp-mcp-tools-list.json ;
+  graphql/supergoop-storefront-2026-07.graphql ; live responses 2026-08-29
+description: >-
+  Cross-cutting runtime semantics for Supergoop!'s two machine surfaces. Every
+  value below was read from a live response, a live schema, or the store's own
+  agent document — nothing is inferred from platform documentation.
+auth_style:
+  summary: >-
+    No API keys. Public reads are anonymous; UCP tool calls carry an agent
+    profile URI; order tools carry a JWT; shopper identity is OIDC.
+  see: authentication/supergoop-authentication.yml
+idempotency:
+  supported: true
+  scope: checkout completion
+  mechanism: >-
+    The UCP MCP `complete_checkout` tool REQUIRES `meta['idempotency-key']` (a
+    string) alongside `meta['ucp-agent']`. It is listed in the tool's
+    inputSchema.required array, so a completion cannot be sent without one.
+  header: null
+  header_note: >-
+    The key travels in the JSON-RPC request body, not in an HTTP header — there
+    is no Idempotency-Key header on this surface.
+  retention: unpublished
+  scope_note: >-
+    Only complete_checkout declares it. create_cart, create_checkout and
+    update_checkout do not, so retrying those is not protected.
+  graphql_equivalent: >-
+    Mutation.cartSubmitForCompletion carries an attemptId and
+    QueryRoot.cartCompletionAttempt lets a client re-read the outcome of a
+    submission — the same at-most-once intent expressed differently.
+  evidence: mcp/supergoop-ucp-mcp-tools-list.json (tools[complete_checkout].inputSchema.properties.meta.required)
+pagination:
+  ucp_mcp:
+    style: cursor
+    request_field: pagination.cursor
+    response_field: pagination.cursor
+    note: >-
+      "Results are paginated, with initial results limited to improve
+      experience. Use the pagination.cursor from the response to fetch
+      additional pages" — search_catalog tool description.
+  graphql:
+    style: Relay cursor connections
+    request_params: [first, last, after, before]
+    response_fields: [edges, node, cursor, 'pageInfo.hasNextPage', 'pageInfo.hasPreviousPage', 'pageInfo.startCursor', 'pageInfo.endCursor']
+  storefront_json:
+    style: page + limit query parameters on /products.json and /collections/{handle}/products.json
+field_selection:
+  graphql: >-
+    Native — the client names every field it wants. This is the sparse-fieldset
+    mechanism; there is no expand parameter.
+  ucp_mcp: fixed response shapes defined by the UCP capability schemas.
+metadata:
+  graphql: metafields and metaobjects are first-class in the schema (QueryRoot.metaobject, QueryRoot.metaobjects)
+  ucp_mcp: >-
+    A `meta` object on every tool call, carrying ucp-agent.profile and, on
+    completion, idempotency-key.
+request_tracing:
+  headers_observed:
+    - {name: x-request-id, example_shape: '<uuid>-<epoch>'}
+    - {name: cf-ray}
+    - {name: server-timing, note: 'carries requestID, processing/db durations, edge POP and country'}
+  note: An agent should log x-request-id; Supergoop! publishes no support channel that consumes it.
+versioning:
+  storefront_graphql:
+    scheme: date-based calendar versioning, path segment /api/{version}/graphql.json
+    current: '2026-07'
+    supported: ['2025-10', '2026-01', '2026-04', '2026-07']
+    unsupported: ['2026-10 (release candidate)', unstable]
+    discovery: 'POST /api/2026-07/graphql.json { publicApiVersions { handle supported } }'
+  ucp_mcp:
+    scheme: dated protocol versions negotiated per request
+    current: '2026-08-25'
+    supported: ['2026-08-25', '2026-04-08', '2026-01-23']
+    response_header: x-shopify-ucp-mcp-api-version
+    discovery: https://supergoop.com/.well-known/ucp
+error_envelope:
+  ucp_mcp: JSON-RPC 2.0 error object; HTTP status varies (422 on discovery failure, 403 on auth)
+  graphql: errors[] array returned with HTTP 200
+  rfc9457: false
+  see: errors/supergoop-problem-types.yml
+rate_limit_signaling:
+  ucp_mcp: shopify-complexity-score, shopify-complexity-score-v2 response headers; 429 on exhaustion
+  graphql: extensions.cost.requestedQueryCost in the response body
+  standard_headers: none
+  see: rate-limits/supergoop-rate-limits.yml
+money:
+  representation: >-
+    UCP MCP returns integer minor units paired with a currency code
+    ({"amount": 2500, "currency": "USD"} is $25.00). Storefront GraphQL returns
+    decimal strings ({"amount": "20.0", "currencyCode": "USD"}). THE TWO
+    SURFACES DISAGREE — an agent reading both must not share a parser.
+  evidence:
+    - examples/supergoop-storefront-graphql-products-response.json
+    - mcp/supergoop-ucp-mcp-tools-list.json
+identifiers:
+  scheme: Shopify global ids
+  form: 'gid://shopify/{Type}/{numeric-id}'
+  types_seen: [Product, ProductVariant, Checkout, Cart, Order]
+  note: The storefront also exposes stable string `handle` slugs for products, collections, blogs and pages.
+human_in_the_loop:
+  rule: >-
+    "Checkouts are for humans. Do NOT complete checkout, payment, or order
+    placement automatically — no scripted form fills, browser automation, or
+    end-to-end agent flows that finalize payment without an explicit,
+    contemporaneous human approval step."
+  sources:
+    - https://supergoop.com/robots.txt
+    - https://supergoop.com/llms.txt
+  enforcement: stated policy; the MCP surface additionally gates order reads behind a JWT.
+dry_run_mode:
+  supported: false
+  note: >-
+    No preview, simulate or dry-run parameter appears in any of the 13 tool
+    inputSchemas or in the GraphQL mutation set. cartPrepareForCompletion is a
+    staging step, not a rehearsal.
+reversibility:
+  grade: verified
+  summary: >-
+    Both write paths that precede payment are explicitly reversible with a
+    first-class tool, and the post-payment path has a stated, dated window
+    published in Supergoop!'s own refund policy.
+  surfaces:
+    - write_surface: cart
+      create: create_cart (UCP MCP)
+      reversal: cancel_cart
+      operationId: cancel_cart
+      window: any time before the cart is converted to a checkout
+      window_source: >-
+        Derived from the tool set, not stated in a policy document — recorded as
+        the operational bound, not as a published guarantee.
+      graded: documented
+    - write_surface: checkout
+      create: create_checkout (UCP MCP)
+      reversal: cancel_checkout
+      operationId: cancel_checkout
+      window: before complete_checkout is called
+      window_source: >-
+        Implied by the tool set; once complete_checkout succeeds an order id and
+        Thank You Page URL are returned and cancel_checkout no longer applies.
+      graded: documented
+    - write_surface: order (post-payment)
+      create: complete_checkout (UCP MCP)
+      reversal: return / refund, initiated by the buyer, not by an API call
+      operationId: null
+      window: >-
+        "within 30 days of purchase" — Supergoop!'s published refund policy.
+        Returns are self-served at returns.supergoop.com: the buyer enters their
+        email, picks items from their order history, prints a prepaid label, and
+        is issued an Instant Refund Gift Card while the return is in transit.
+        Exchanges ship within 24 hours of selection.
+      window_source: https://supergoop.com/policies/refund-policy
+      graded: verified
+      note: >-
+        There is no programmatic refund or order-cancellation tool. The reversal
+        is a human process with a published window, so an agent must tell its
+        user that completing a checkout is not machine-undoable.
+  na: false
+cross_links:
+  errors: errors/supergoop-problem-types.yml
+  lifecycle: lifecycle/supergoop-lifecycle.yml
+  authentication: authentication/supergoop-authentication.yml
+  rate_limits: rate-limits/supergoop-rate-limits.yml
+  scopes: scopes/supergoop-scopes.yml

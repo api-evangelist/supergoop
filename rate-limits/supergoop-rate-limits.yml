@@ -1,0 +1,50 @@
+generated: '2026-08-29'
+method: probed
+source: >-
+  response headers on https://supergoop.com/api/ucp/mcp ;
+  extensions.cost on https://supergoop.com/api/2026-07/graphql.json ;
+  https://supergoop.com/llms.txt
+description: >-
+  Supergoop! publishes no numeric rate limits of its own. What it does emit is a
+  real runtime cost signal on both machine surfaces, captured here from live
+  responses, plus a prose back-off instruction in its agent document.
+limit_count: 0
+limit_count_note: >-
+  No published quota, window, burst or per-key limit exists anywhere on
+  supergoop.com. limit_count is an honest zero; the headers below are the
+  runtime signal an agent actually gets.
+surfaces:
+  - name: UCP shopping MCP
+    endpoint: https://supergoop.com/api/ucp/mcp
+    scope: per-IP
+    window: unpublished
+    limit: unpublished
+    burst: unpublished
+    exhaustion_status: 429
+    exhaustion_source: >-
+      https://supergoop.com/llms.txt — "The MCP endpoint is rate-limited per IP.
+      Back off on 429 responses."
+    response_headers:
+      - {name: shopify-complexity-score, observed: '360', meaning: Cost of the request in legacy complexity points.}
+      - {name: shopify-complexity-score-v2, observed: '36', meaning: Cost of the request under the v2 complexity model.}
+      - {name: 'x-shopify-ucp-mcp-api-version', observed: '2026-08-25', meaning: Negotiated UCP protocol version (not a limit, recorded for completeness).}
+    standard_headers: none
+    standard_headers_note: >-
+      No RateLimit-*, X-RateLimit-* or Retry-After header was returned on a 200.
+      An agent can read cost but cannot read remaining budget or reset time.
+  - name: Storefront GraphQL
+    endpoint: https://supergoop.com/api/2026-07/graphql.json
+    scope: per-IP
+    window: unpublished
+    limit: unpublished
+    exhaustion_status: 430 or 429 (platform behaviour; not observed)
+    response_body_signal:
+      field: extensions.cost.requestedQueryCost
+      observed: 4
+      meaning: >-
+        Query cost is returned inline in the GraphQL response envelope rather
+        than in a header. Observed on every probe.
+    response_headers: none observed
+observed:
+  - {url: 'https://supergoop.com/api/ucp/mcp', method: POST, status: 200, date: '2026-08-29'}
+  - {url: 'https://supergoop.com/api/2026-07/graphql.json', method: POST, status: 200, date: '2026-08-29'}

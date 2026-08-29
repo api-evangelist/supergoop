@@ -1,0 +1,151 @@
+generated: '2026-08-29'
+method: derived
+source: mcp/supergoop-ucp-mcp-tools-list.json + graphql/supergoop-storefront-2026-07.graphql
+name: Supergoop! MCP <-> GraphQL tool crosswalk
+description: >-
+  Supergoop! publishes no OpenAPI, so the REST column of the standard crosswalk
+  is empty. What it does publish is two overlapping-but-not-identical machine
+  surfaces on the same store: the UCP shopping MCP server at
+  /api/ucp/mcp (13 tools) and the Shopify Storefront GraphQL API at
+  /api/2026-07/graphql.json (34 queries, 41 mutations). This file binds each MCP
+  tool to the GraphQL field(s) that cover the same capability, and records what
+  only one surface can do.
+surfaces:
+  openapi: none published
+  graphql:
+    endpoint: https://supergoop.com/api/2026-07/graphql.json
+    gated: false
+    note: introspection open and anonymous; customer-scoped fields need a customer access token
+  mcp:
+    endpoint: https://supergoop.com/api/ucp/mcp
+    gated: partial
+    note: >-
+      tools/list anonymous; catalog calls require a fetchable UCP agent profile;
+      order calls require a JWT
+binding_note: >-
+  Bindings are by capability and name semantics against the live schemas of both
+  surfaces. No OpenAPI operationIds exist for this provider, so the `rest` column
+  is empty on every row by fact, not by omission.
+crosswalk:
+  - tool: search_catalog
+    category: catalog
+    rest: []
+    graphql: [QueryRoot.search, QueryRoot.predictiveSearch, QueryRoot.products]
+    binding: capability
+    confidence: high
+    note: UCP catalog search vs Storefront search/products connections; filters and ranking differ.
+  - tool: lookup_catalog
+    category: catalog
+    rest: []
+    graphql: [QueryRoot.nodes, QueryRoot.products, QueryRoot.productByHandle]
+    binding: capability
+    confidence: medium
+    note: Batch identifier lookup; GraphQL covers it via nodes() on gids.
+  - tool: get_product
+    category: catalog
+    rest: []
+    graphql: [QueryRoot.product, QueryRoot.productByHandle]
+    binding: direct
+    confidence: high
+  - tool: create_cart
+    category: cart
+    rest: []
+    graphql: [Mutation.cartCreate]
+    binding: direct
+    confidence: high
+  - tool: get_cart
+    category: cart
+    rest: []
+    graphql: [QueryRoot.cart]
+    binding: direct
+    confidence: high
+  - tool: update_cart
+    category: cart
+    rest: []
+    graphql: [Mutation.cartLinesAdd, Mutation.cartLinesUpdate, Mutation.cartLinesRemove, Mutation.cartAttributesUpdate, Mutation.cartNoteUpdate, Mutation.cartBuyerIdentityUpdate, Mutation.cartDiscountCodesUpdate]
+    binding: composite
+    confidence: high
+    note: One MCP tool fans out to seven GraphQL mutations.
+  - tool: cancel_cart
+    category: cart
+    rest: []
+    graphql: [Mutation.cartRemovePersonalData]
+    binding: partial
+    confidence: low
+    note: >-
+      GraphQL has no cartDelete; cartRemovePersonalData is the nearest
+      destructive operation. Recorded as low confidence rather than asserted.
+  - tool: create_checkout
+    category: checkout
+    rest: []
+    graphql: [Mutation.cartCreate, Mutation.cartPrepareForCompletion]
+    binding: capability
+    confidence: medium
+    note: >-
+      Storefront GraphQL retired standalone Checkout objects; checkout is
+      expressed as cart preparation/submission. UCP re-introduces a first-class
+      Checkout resource, so the mapping is not one-to-one.
+  - tool: get_checkout
+    category: checkout
+    rest: []
+    graphql: [QueryRoot.cart, QueryRoot.cartCompletionAttempt]
+    binding: capability
+    confidence: medium
+  - tool: update_checkout
+    category: checkout
+    rest: []
+    graphql: [Mutation.cartDeliveryAddressesAdd, Mutation.cartDeliveryAddressesUpdate, Mutation.cartSelectedDeliveryOptionsUpdate, Mutation.cartBillingAddressUpdate, Mutation.cartPaymentUpdate]
+    binding: composite
+    confidence: medium
+  - tool: complete_checkout
+    category: checkout
+    rest: []
+    graphql: [Mutation.cartSubmitForCompletion]
+    binding: capability
+    confidence: medium
+    note: >-
+      MCP requires meta['idempotency-key']; the GraphQL equivalent carries
+      attemptId. Both are single-shot completion with human payment approval.
+  - tool: cancel_checkout
+    category: checkout
+    rest: []
+    graphql: []
+    binding: none
+    confidence: high
+    note: No Storefront GraphQL equivalent — checkout cancellation is MCP/UCP-only.
+  - tool: get_order
+    category: order
+    rest: []
+    graphql: []
+    binding: none
+    confidence: high
+    note: >-
+      Order retrieval is not on the anonymous Storefront schema; it lives on the
+      Customer Account API. MCP exposes it behind a JWT.
+mcp_only:
+  - {tool: cancel_checkout, reason: No Storefront GraphQL mutation cancels a checkout/cart submission.}
+  - {tool: get_order, reason: Orders are not exposed by the Storefront GraphQL schema; requires the Customer Account API or a UCP JWT.}
+graphql_only:
+  - {field: QueryRoot.blog, reason: Blog/article content has no UCP shopping tool.}
+  - {field: QueryRoot.article, reason: Editorial content is outside the UCP shopping service.}
+  - {field: QueryRoot.page, reason: CMS pages are outside the UCP shopping service.}
+  - {field: QueryRoot.menu, reason: Storefront navigation is outside the UCP shopping service.}
+  - {field: QueryRoot.metaobject, reason: Custom metaobject content has no UCP tool.}
+  - {field: QueryRoot.localization, reason: Country/language availability is a GraphQL-only query; UCP passes context.address_country instead.}
+  - {field: QueryRoot.productRecommendations, reason: Recommendation engine is not surfaced as a UCP tool.}
+  - {field: QueryRoot.urlRedirects, reason: SEO/redirect data has no UCP tool.}
+  - {field: QueryRoot.sitemap, reason: Sitemap query has no UCP tool.}
+  - {field: Mutation.customerCreate, reason: Customer account creation is GraphQL-only; UCP carries buyer identity per checkout.}
+  - {field: Mutation.customerAccessTokenCreate, reason: Storefront customer auth is GraphQL-only.}
+  - {field: Mutation.customerAddressCreate, reason: Address book management is GraphQL-only.}
+  - {field: Mutation.cartClone, reason: Cart cloning has no UCP tool.}
+  - {field: Mutation.shopPayPaymentRequestSessionCreate, reason: Shop Pay payment request sessions are GraphQL-only.}
+rest_only: []
+coverage:
+  mcp_tools: 13
+  mcp_tools_bound_to_graphql: 11
+  mcp_only_tools: 2
+  graphql_query_fields: 34
+  graphql_mutation_fields: 41
+  graphql_only_fields_recorded: 14
+  openapi_operations: 0

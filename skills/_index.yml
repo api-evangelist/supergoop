@@ -1,0 +1,30 @@
+generated: '2026-08-29'
+method: generated
+source: mcp/supergoop-ucp-mcp-tools-list.json ; graphql/supergoop-storefront-2026-07.graphql ; https://supergoop.com/llms.txt
+description: >-
+  Packaged Agent Skills for the Supergoop! commerce surfaces. Both are grounded
+  in tool names read from the live tools/list response and field names read from
+  the live GraphQL SDL — no operation named in either skill was invented.
+  Supergoop! publishes no skills of its own; /SKILL.md is a 404 and its agent
+  document points at Shopify's cross-store skill at https://shop.app/SKILL.md.
+skills:
+  - name: supergoop-find-sunscreen
+    file: skills/supergoop-find-sunscreen.md
+    api: Supergoop! UCP Shopping MCP Server
+    flow: catalog discovery
+    operations: [search_catalog, lookup_catalog, get_product]
+    graphql_fields: [products, search, predictiveSearch, productByHandle]
+    write: false
+  - name: supergoop-agent-checkout
+    file: skills/supergoop-agent-checkout.md
+    api: Supergoop! UCP Shopping MCP Server
+    flow: cart to checkout, stopping at human payment approval
+    operations: [create_cart, get_cart, update_cart, cancel_cart, create_checkout, get_checkout, update_checkout, complete_checkout, cancel_checkout]
+    write: true
+    human_approval_required: true
+provider_published_skills:
+  found: false
+  probed:
+    - {url: 'https://supergoop.com/SKILL.md', status: 404}
+    - {url: 'https://supergoop.com/skill.md', status: 404}
+    - {url: 'https://supergoop.com/agents.md', status: 200, note: 'agent instructions, saved to llms/supergoop-agents.md — not a packaged skill'}

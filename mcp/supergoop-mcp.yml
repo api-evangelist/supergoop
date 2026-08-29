@@ -1,0 +1,81 @@
+generated: '2026-08-29'
+method: probed
+source: https://supergoop.com/api/ucp/mcp
+name: Supergoop! UCP Shopping MCP Server
+description: >-
+  Supergoop! serves a live, remote Model Context Protocol server at
+  https://supergoop.com/api/ucp/mcp implementing the Universal Commerce Protocol
+  (UCP) shopping service. An anonymous tools/list POST returned HTTP 200 with 13
+  tools and full JSON Schema draft 2020-12 inputSchemas; the verbatim response is
+  saved to mcp/supergoop-ucp-mcp-tools-list.json.
+status: live
+deployment:
+  mode: remote
+  endpoint: https://supergoop.com/api/ucp/mcp
+  auth: unknown
+  verified: probed
+  note: >-
+    tools/list is anonymous. Tool CALLS are tiered: catalog tools require a
+    fetchable UCP agent profile URI passed in meta['ucp-agent'].profile (a
+    -32001 profile_unreachable error is returned when it cannot be fetched), and
+    order/customer tools require a JWT (-32000 AuthenticationRequired, HTTP 403,
+    pointing at https://shopify.dev/docs/agents/get-started/authentication).
+    There is no api-key path and no OAuth challenge on the MCP endpoint itself,
+    so 'unknown' is the honest value rather than none/oauth/api-key.
+alternate_endpoints:
+  - url: https://supergoop.myshopify.com/api/ucp/mcp
+    source: https://supergoop.com/.well-known/ucp (services['dev.ucp.shopping'][0].endpoint)
+discovery:
+  - {path: /llms.txt, url: 'https://supergoop.com/llms.txt', status: 200}
+  - {path: /agents.md, url: 'https://supergoop.com/agents.md', status: 200}
+  - {path: /robots.txt, url: 'https://supergoop.com/robots.txt', status: 200, note: names the UCP and MCP endpoints in comments}
+  - {path: /.well-known/ucp, url: 'https://supergoop.com/.well-known/ucp', status: 200}
+  - {path: /sitemap_agentic_discovery.xml, url: 'https://supergoop.com/sitemap_agentic_discovery.xml', status: 200, note: a dedicated agent-discovery sitemap containing only /agents.md}
+protocol:
+  name: Universal Commerce Protocol (UCP)
+  spec: https://ucp.dev
+  transport: mcp
+  api_version_header: x-shopify-ucp-mcp-api-version
+  negotiated_version: '2026-08-25'
+  supported_versions: ['2026-08-25', '2026-04-08', '2026-01-23']
+  service: dev.ucp.shopping
+  schema: https://ucp.dev/2026-08-25/services/shopping/mcp.openrpc.json
+  capabilities:
+    - dev.ucp.shopping.cart
+    - dev.ucp.shopping.checkout
+    - dev.ucp.shopping.fulfillment
+    - dev.ucp.shopping.discount
+    - dev.ucp.shopping.order
+    - dev.ucp.shopping.catalog.search
+    - dev.ucp.shopping.catalog.lookup
+    - dev.shopify.catalog
+  payment_handlers:
+    - com.google.pay
+tools_source: mcp/supergoop-ucp-mcp-tools-list.json
+tool_count: 13
+tools:
+  - {name: search_catalog, category: catalog, summary: 'Natural-language and filtered product search over the Supergoop! catalog; cursor paginated; conforms to dev.ucp.shopping.catalog.search.'}
+  - {name: lookup_catalog, category: catalog, summary: 'Look up multiple products or variants by identifier.'}
+  - {name: get_product, category: catalog, summary: 'Retrieve complete product detail by identifier; returns a single product.'}
+  - {name: create_cart, category: cart, summary: 'Create a new cart.'}
+  - {name: get_cart, category: cart, summary: 'Get cart contents.'}
+  - {name: update_cart, category: cart, summary: 'Apply updates to a cart.'}
+  - {name: cancel_cart, category: cart, summary: 'Cancel a cart.'}
+  - {name: create_checkout, category: checkout, summary: 'Create a checkout; returns line items, totals, discounts and taxes.'}
+  - {name: get_checkout, category: checkout, summary: 'Return checkout detail by id (gid://shopify/Checkout/...).'}
+  - {name: update_checkout, category: checkout, summary: 'Update a checkout (shipping address, delivery method, buyer details).'}
+  - {name: complete_checkout, category: checkout, summary: 'Complete a checkout and return the order id and Thank You Page URL. Requires meta[idempotency-key].'}
+  - {name: cancel_checkout, category: checkout, summary: 'Cancel a checkout.'}
+  - {name: get_order, category: order, summary: 'Get order detail. JWT required (403 AuthenticationRequired when anonymous).'}
+conventions_observed:
+  money: >-
+    Every price is an integer in ISO 4217 minor units paired with a currency code
+    ({"amount": 2500, "currency": "USD"} is $25.00). Stated in every tool
+    description.
+  identifiers: Shopify global ids, e.g. gid://shopify/Checkout/abc123
+  pagination: cursor, via pagination.cursor on catalog search responses
+  idempotency: meta['idempotency-key'] is REQUIRED on complete_checkout
+  human_in_the_loop: >-
+    Both robots.txt and llms.txt state that checkout, payment and order placement
+    must not be completed by an agent without explicit contemporaneous human
+    approval.

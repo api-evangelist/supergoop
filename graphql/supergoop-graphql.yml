@@ -1,0 +1,95 @@
+generated: '2026-08-29'
+method: probed
+source: https://supergoop.com/api/2026-07/graphql.json
+name: Supergoop! Storefront GraphQL API
+description: >-
+  The Shopify Storefront GraphQL API as served for the Supergoop! store at
+  supergoop.com. Introspection is open and unauthenticated on this endpoint: a
+  full introspection POST returned HTTP 200 with 428 types, 34 root query fields
+  and 41 mutations. The SDL saved alongside this manifest is generated verbatim
+  from that live introspection response, not hand-written.
+ownership_note: >-
+  The endpoint is served on supergoop.com, a host Supergoop! controls, and
+  resolves the Supergoop! store (shop.name "Supergoop!",
+  shop.primaryDomain.url https://supergoop.com). The SCHEMA itself is
+  platform-authored by Shopify (Storefront API 2026-07) rather than written by
+  Supergoop!; what Supergoop! publishes is the endpoint, the version surface and
+  the data behind it. Recorded here as the store's callable contract with that
+  distinction stated.
+endpoints:
+  - url: https://supergoop.com/api/2026-07/graphql.json
+    version: '2026-07'
+    status: 200
+    introspection: open
+    auth: none observed for introspection and public catalog reads
+surface:
+  types: 428
+  query_fields: 34
+  mutation_fields: 41
+  subscription_fields: 0
+  key_queries:
+    - product
+    - products
+    - productByHandle
+    - productRecommendations
+    - collection
+    - collections
+    - search
+    - predictiveSearch
+    - cart
+    - shop
+    - blog
+    - article
+    - page
+    - menu
+    - localization
+    - paymentSettings
+    - sitemap
+    - urlRedirects
+    - publicApiVersions
+  key_mutations:
+    - cartCreate
+    - cartLinesAdd
+    - cartLinesUpdate
+    - cartLinesRemove
+    - cartDiscountCodesUpdate
+    - cartDeliveryAddressesAdd
+    - cartSelectedDeliveryOptionsUpdate
+    - cartPrepareForCompletion
+    - cartSubmitForCompletion
+    - cartClone
+    - cartRemovePersonalData
+    - customerCreate
+    - customerAccessTokenCreate
+    - customerAccessTokenRenew
+    - customerAccessTokenDelete
+    - customerRecover
+    - customerReset
+    - customerUpdate
+    - customerAddressCreate
+    - customerAddressUpdate
+    - customerAddressDelete
+    - shopPayPaymentRequestSessionCreate
+    - shopPayPaymentRequestSessionSubmit
+versions:
+  scheme: date-based (Shopify calendar versioning, quarterly)
+  source: https://supergoop.com/api/2026-07/graphql.json (publicApiVersions query)
+  probed: '2026-08-29'
+  available:
+    - {handle: '2025-10', supported: true}
+    - {handle: '2026-01', supported: true}
+    - {handle: '2026-04', supported: true}
+    - {handle: '2026-07', supported: true, latest: true}
+    - {handle: '2026-10', supported: false, note: release candidate}
+    - {handle: unstable, supported: false}
+files:
+  - file: graphql/supergoop-storefront-2026-07.graphql
+    format: GraphQL SDL
+    derived_from: live introspection response, 2026-08-29
+notes:
+  - >-
+    Customer-scoped fields (customer, order history) require a customer access
+    token; catalog, collection, blog, page and cart fields answered anonymously.
+  - >-
+    Cost accounting is returned inline in extensions.cost on every response
+    (requestedQueryCost), which is the runtime rate-limit signal for this API.

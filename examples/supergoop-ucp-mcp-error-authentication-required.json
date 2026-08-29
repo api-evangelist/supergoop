@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","id":3,"error":{"code":-32000,"message":"AuthenticationRequired","data":"Unauthorized: A valid JWT is required to call get_order. See https://shopify.dev/docs/agents/get-started/authentication for instructions on generating a token and authenticating your requests."}}

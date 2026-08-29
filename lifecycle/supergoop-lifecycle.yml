@@ -1,0 +1,68 @@
+generated: '2026-08-29'
+method: probed
+source: >-
+  publicApiVersions query on https://supergoop.com/api/2026-07/graphql.json ;
+  https://supergoop.com/.well-known/ucp ; x-shopify-ucp-mcp-api-version header
+description: >-
+  Supergoop! publishes no versioning policy, no deprecation policy, no SLA and no
+  status page of its own. Both of its machine surfaces are nevertheless
+  explicitly versioned and the version inventory is machine-readable, so the
+  lifecycle facts below were probed rather than searched.
+versioning:
+  storefront_graphql:
+    scheme: date-based calendar versioning in the URL path
+    current: '2026-07'
+    discovery_query: 'POST /api/2026-07/graphql.json { publicApiVersions { handle displayName supported } }'
+    probed: '2026-08-29'
+    versions:
+      - {handle: '2025-10', supported: true}
+      - {handle: '2026-01', supported: true}
+      - {handle: '2026-04', supported: true}
+      - {handle: '2026-07', supported: true, latest: true}
+      - {handle: '2026-10', supported: false, note: release candidate}
+      - {handle: unstable, supported: false}
+  ucp_mcp:
+    scheme: dated protocol versions, negotiated per request
+    current: '2026-08-25'
+    supported: ['2026-08-25', '2026-04-08', '2026-01-23']
+    discovery: https://supergoop.com/.well-known/ucp
+    response_header: x-shopify-ucp-mcp-api-version
+deprecation:
+  policy_published: false
+  policy_url: null
+  sunset_header: not observed
+  deprecation_header: not observed
+  signals:
+    - >-
+      Storefront GraphQL marks retired versions with supported:false in
+      publicApiVersions, which is a machine-readable end-of-support signal even
+      though no dated policy accompanies it.
+    - >-
+      The live SDL carries @deprecated on individual fields, so field-level
+      deprecation is discoverable by introspection.
+    - >-
+      The UCP profile lists three concurrently supported protocol versions with
+      no stated retirement dates.
+  note: >-
+    All of this is platform behaviour inherited from Shopify. Supergoop! itself
+    states nothing about deprecation, so no Deprecation pointer is emitted.
+status_page:
+  published: false
+  url: null
+  note: >-
+    Supergoop! operates no status page. The underlying platform's status page is
+    Shopify's property, not Supergoop!'s, so it is not recorded as a provider
+    artifact.
+sla:
+  published: false
+  note: >-
+    No SLA, uptime commitment or support-response commitment is published for
+    any machine surface. The only published time commitments are commercial:
+    exchanges ship within 24 hours of selection, returns accepted within 30 days
+    of purchase (https://supergoop.com/policies/refund-policy).
+changelog:
+  published: false
+  note: >-
+    No dated changelog exists for the storefront, the GraphQL surface or the MCP
+    surface on supergoop.com.
+deprecated_operations: []

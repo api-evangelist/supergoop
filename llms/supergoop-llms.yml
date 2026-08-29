@@ -1,0 +1,39 @@
+generated: '2026-08-29'
+method: searched
+source: https://supergoop.com/llms.txt
+description: >-
+  Supergoop! publishes a real llms.txt (HTTP 200, text/markdown, 4,301 bytes) and
+  a canonical /agents.md (HTTP 200, 4,258 bytes) of which llms.txt is a near-exact
+  mirror — the two differ only in the one line that says which document is
+  canonical. Both are saved verbatim. The document is agent operating
+  instructions, not a docs index: it names the UCP discovery path, the MCP
+  endpoint, the typical six-step agent purchase flow, the read-only storefront
+  JSON endpoints, and the buyer-approval rule for payment.
+files:
+  - {file: llms/supergoop-llms.txt, url: 'https://supergoop.com/llms.txt', status: 200, bytes: 4301}
+  - {file: llms/supergoop-agents.md, url: 'https://supergoop.com/agents.md', status: 200, bytes: 4258, canonical: true}
+declares:
+  ucp_discovery: https://supergoop.com/.well-known/ucp
+  mcp_endpoint: https://supergoop.com/api/ucp/mcp
+  ucp_versions: ['2026-08-25', '2026-04-08', '2026-01-23']
+  read_only_endpoints:
+    - GET /collections/all
+    - GET /products/{handle}
+    - GET /products/{handle}.json
+    - GET /collections/{handle}
+    - GET /collections/{handle}/products.json
+    - GET /search?q={query}&type=product
+    - GET /sitemap.xml
+  policies:
+    privacy: https://supergoop.com/policies/privacy-policy
+    terms: https://supergoop.com/policies/terms-of-service
+    refund: https://supergoop.com/policies/refund-policy
+  rules:
+    - Checkout requires explicit contemporaneous human approval; agents must not complete payment alone.
+    - The MCP endpoint is rate-limited per IP; back off on 429.
+    - Pass context.address_country and context.currency for accurate pricing and availability.
+authorship_note: >-
+  The document is platform-authored: it is the Shopify-generated agents.md/llms.txt
+  that ships with UCP-enabled Shopify stores, and it recommends the cross-store
+  Shop skill at https://shop.app/SKILL.md. Every endpoint it names is
+  nevertheless served on Supergoop!'s own domain and was probed live.

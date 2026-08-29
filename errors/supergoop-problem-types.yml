@@ -1,0 +1,83 @@
+generated: '2026-08-29'
+method: probed
+source: >-
+  live error responses from https://supergoop.com/api/ucp/mcp and
+  https://supergoop.com/api/2026-07/graphql.json
+description: >-
+  Supergoop! publishes no error reference. The catalogue below is built from
+  error envelopes actually returned by its two machine surfaces on 2026-08-29,
+  saved verbatim under examples/. Neither surface uses RFC 9457
+  application/problem+json.
+format: not rfc9457
+envelopes:
+  - surface: UCP shopping MCP
+    endpoint: https://supergoop.com/api/ucp/mcp
+    media_type: application/json
+    shape: JSON-RPC 2.0 error object
+    fields: [jsonrpc, id, 'error.code', 'error.message', 'error.data']
+    note: >-
+      error.data is sometimes an object (with code / content / continue_url) and
+      sometimes a plain string. That inconsistency is in the live responses, not
+      in this record.
+  - surface: Storefront GraphQL
+    endpoint: https://supergoop.com/api/2026-07/graphql.json
+    media_type: application/json
+    shape: GraphQL errors[] array, HTTP 200
+    fields: [message, 'locations[]', 'path[]', 'extensions.code', 'extensions.typeName', 'extensions.fieldName']
+problem_types:
+  - id: ucp-profile-unreachable
+    surface: UCP shopping MCP
+    http_status: 422
+    rpc_code: -32001
+    title: UCP discovery failed
+    data_code: profile_unreachable
+    detail: >-
+      "Unable to fetch agent profile: Http error". The server tried to GET the
+      URI passed in meta['ucp-agent'].profile and could not retrieve it.
+    remediation: >-
+      Publish a fetchable UCP agent profile document at a stable public URL and
+      pass its URI on every tool call.
+    carries: continue_url (a human handoff URL back to the storefront)
+    evidence: examples/supergoop-ucp-mcp-error-profile-unreachable.json
+  - id: authentication-required
+    surface: UCP shopping MCP
+    http_status: 403
+    rpc_code: -32000
+    title: AuthenticationRequired
+    detail: >-
+      "Unauthorized: A valid JWT is required to call get_order." Returned for
+      order- and customer-scoped tools when no bearer token is presented.
+    remediation: >-
+      Obtain a JWT per https://shopify.dev/docs/agents/get-started/authentication
+      and present it on the request.
+    evidence: examples/supergoop-ucp-mcp-error-authentication-required.json
+  - id: graphql-undefined-field
+    surface: Storefront GraphQL
+    http_status: 200
+    extensions_code: undefinedField
+    title: Field does not exist on type
+    detail: >-
+      "Field 'nope' doesn't exist on type 'QueryRoot'" — validation errors are
+      returned with HTTP 200 and a populated errors[] array, so status code alone
+      is not a success signal on this surface.
+    remediation: Validate the query against graphql/supergoop-storefront-2026-07.graphql before sending.
+  - id: graphql-no-query-string
+    surface: Storefront GraphQL
+    http_status: 200
+    title: No query string was present
+    detail: Returned on a GET or an empty body; the endpoint is POST-only in practice.
+    remediation: POST a JSON body with a `query` member.
+  - id: storefront-not-found
+    surface: storefront HTML/JSON
+    http_status: 404
+    title: Not Found
+    detail: >-
+      Missing pages, policies and /.well-known/ paths return the storefront's
+      themed HTML 404 (text/html, ~876 KB). There is no JSON 404 body, so a
+      machine client must read the status code, not the body.
+    remediation: Treat any text/html response from a JSON path as an error.
+gaps:
+  - >-
+    No enumerated error-code registry, no documented retry semantics, and no
+    documented 429 body. Only the two live errors above and the platform 404 were
+    observable without transacting.
