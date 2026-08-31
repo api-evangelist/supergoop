@@ -34,6 +34,21 @@ tags:
 - Shopify
 - Agentic Commerce
 - Universal Commerce Protocol
+- MCP
+- GraphQL
+tags_raw:
+- Company
+- Sunscreen
+- Skincare
+- Beauty
+- Cosmetics
+- Consumer Goods
+- Retail
+- E-Commerce
+- Direct to Consumer
+- Shopify
+- Agentic Commerce
+- Universal Commerce Protocol
 - Model Context Protocol
 - GraphQL
 apis:
@@ -67,6 +82,12 @@ apis:
   humanURL: https://supergoop.com/agents.md
   baseURL: https://supergoop.com/api/2026-07/graphql.json
   tags:
+  - GraphQL
+  - Catalog
+  - Product
+  - Cart
+  - E-Commerce
+  tags_raw:
   - GraphQL
   - Catalog
   - Products
