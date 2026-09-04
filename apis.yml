@@ -12,6 +12,21 @@ description: >-
   /api/2026-07/graphql.json with 428 types, and agent-facing instructions at
   /agents.md and /llms.txt that publish the discovery paths, the six-step agent
   purchase flow and a hard human-approval rule on payment.
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  - scopes
+  - rate-limits
+  - security
+  generated: '2026-09-02'
+  method: derived
 image: https://supergoop.com/cdn/shop/files/logo_desktop.svg
 url: https://raw.githubusercontent.com/api-evangelist/supergoop/refs/heads/main/apis.yml
 x-type: company
