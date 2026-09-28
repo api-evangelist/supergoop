@@ -1,0 +1,28 @@
+generated: '2026-09-28'
+method: probed
+source: https://supergoop.com/policies/privacy-policy
+signals:
+  data_retention:
+    - evidence:
+        - source: https://supergoop.com/policies/privacy-policy
+          http_status: 200
+          fetched: /tmp/privacy.html
+          quote: "We retain Personal Data about you for as long as necessary to provide you with our Services or to perform our business or commercial purposes for collecting your Personal Data. When establishing a retention period for specific categories of data, we consider who we collected the data from, our need for the Personal Data, why we collected the Data, and the sensitivity of the Personal Data. In some cases we retain Personal Data for longer, if doing so is necessary to comply with our legal obligations, resolve disputes or collect fees owed, or is otherwise permitted or required by applicable law, rule or regulation."
+      section: "Data Retention"
+      note: "Specifies retention periods and criteria for personal data."
+  data_subject_request:
+    - evidence:
+        - source: https://supergoop.com/policies/privacy-policy
+          http_status: 200
+          fetched: /tmp/privacy.html
+          quote: "You have the right to request that we delete the Personal Data that we have collected about you. Under the CCPA, this right is subject to certain exceptions: for example, we may need to retain your Personal Data to provide you with the Services or complete a transaction or other action you have requested, or if deletion of your Personal Data involves disproportionate effort."
+      section: "Your Rights"
+      note: "Provides data subject deletion request rights with exceptions."
+  incident_notification:
+    - evidence:
+        - source: https://supergoop.com/policies/privacy-policy
+          http_status: 200
+          fetched: /tmp/privacy.html
+          quote: "In addition, each of the above referenced categories of Personal Data may be collected, used, and disclosed with the government, including law enforcement, or other parties to meet certain legal requirements and enforcing legal terms including: fulfilling our legal obligations under applicable law, regulation, court order or other legal process, such as preventing, detecting and investigating security incidents and potentially illegal or prohibited activities;"
+      section: "Legal Disclosures"
+      note: "Mentions use of data for detecting and investigating security incidents."

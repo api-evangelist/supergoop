@@ -14,8 +14,9 @@ auth_style:
     profile URI; order tools carry a JWT; shopper identity is OIDC.
   see: authentication/supergoop-authentication.yml
 idempotency:
+  coverage: partial
   supported: true
-  scope: checkout completion
+  scope: [checkout completion]
   mechanism: >-
     The UCP MCP `complete_checkout` tool REQUIRES `meta['idempotency-key']` (a
     string) alongside `meta['ucp-agent']`. It is listed in the tool's

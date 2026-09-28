@@ -1,0 +1,94 @@
+generated: '2026-09-28'
+method: derived
+source: the pre-flight dossier, apis.yml pointers, spec servers, well-known, vendors -- nothing fetched here
+generator: derive-hosts.py
+summary:
+  hosts: 7
+  own: 2
+  other_domain: 2
+  platform: 3
+  roles:
+  - api
+  - other
+  - source
+  - website
+hosts:
+- host: api.supergoop.com
+  found_by:
+  - contract-discovery
+  types: []
+  serves: []
+  registrable_domain: supergoop.com
+  role: api
+  relation: own
+- host: github.com
+  found_by:
+  - pointer
+  types:
+  - GitHubOrganization
+  serves: []
+  registrable_domain: github.com
+  role: source
+  relation: platform
+- host: shop.app
+  found_by:
+  - docs-index
+  types: []
+  serves:
+  - docs
+  registrable_domain: shop.app
+  role: other
+  relation: other-domain
+- host: supergoop.com
+  found_by:
+  - pointer
+  - apis[]
+  - probed
+  - docs-index
+  - contract-discovery
+  - well-known
+  - vendor-detect
+  types:
+  - Website
+  - Documentation
+  - Support
+  - SignUp
+  - Login
+  - TermsOfService
+  - PrivacyPolicy
+  serves:
+  - api
+  - docs
+  - cdn
+  - hosting
+  vendor: cloudflare
+  registrable_domain: supergoop.com
+  role: website
+  relation: own
+- host: ucp.dev
+  found_by:
+  - docs-index
+  types: []
+  serves:
+  - docs
+  registrable_domain: ucp.dev
+  role: other
+  relation: other-domain
+- host: www.hiive.com
+  found_by:
+  - pointer
+  types:
+  - SecondaryMarketListing
+  serves: []
+  registrable_domain: hiive.com
+  role: other
+  relation: platform
+- host: www.shopify.com
+  found_by:
+  - docs-index
+  types: []
+  serves:
+  - docs
+  registrable_domain: shopify.com
+  role: other
+  relation: platform

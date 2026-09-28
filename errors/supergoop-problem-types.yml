@@ -24,7 +24,7 @@ envelopes:
     media_type: application/json
     shape: GraphQL errors[] array, HTTP 200
     fields: [message, 'locations[]', 'path[]', 'extensions.code', 'extensions.typeName', 'extensions.fieldName']
-problem_types:
+problems:
   - id: ucp-profile-unreachable
     surface: UCP shopping MCP
     http_status: 422

@@ -1,17 +1,14 @@
 aid: supergoop
+
 name: Supergoop!
-description: >-
-  Supergoop! is a prestige suncare brand founded in 2005 by Holly Thaggard and
-  headquartered in San Antonio, Texas, selling SPF-first skincare, body, makeup
-  and kids products direct-to-consumer at supergoop.com and through retail
-  partners; Blackstone Growth took a majority stake in 2021 at a reported $600-700
-  million valuation. It is not a software company and runs no developer program,
-  but its Shopify storefront exposes three live, anonymous machine surfaces on its
-  own domain: a Universal Commerce Protocol (UCP) shopping MCP server at
-  /api/ucp/mcp with 13 tools, a fully introspectable Storefront GraphQL API at
-  /api/2026-07/graphql.json with 428 types, and agent-facing instructions at
-  /agents.md and /llms.txt that publish the discovery paths, the six-step agent
-  purchase flow and a hard human-approval rule on payment.
+
+description: 'Supergoop! is a prestige suncare brand founded in 2005 by Holly Thaggard and headquartered in San Antonio, Texas, selling SPF-first
+  skincare, body, makeup and kids products direct-to-consumer at supergoop.com and through retail partners; Blackstone Growth took a majority
+  stake in 2021 at a reported $600-700 million valuation. It is not a software company and runs no developer program, but its Shopify storefront
+  exposes three live, anonymous machine surfaces on its own domain: a Universal Commerce Protocol (UCP) shopping MCP server at /api/ucp/mcp with
+  13 tools, a fully introspectable Storefront GraphQL API at /api/2026-07/graphql.json with 428 types, and agent-facing instructions at /agents.md
+  and /llms.txt that publish the discovery paths, the six-step agent purchase flow and a hard human-approval rule on payment.'
+
 accessModel:
   pricing: unknown
   onboarding: self-serve
@@ -27,15 +24,25 @@ accessModel:
   - security
   generated: '2026-09-02'
   method: derived
+
 image: https://supergoop.com/cdn/shop/files/logo_desktop.svg
+
 url: https://raw.githubusercontent.com/api-evangelist/supergoop/refs/heads/main/apis.yml
+
 x-type: company
+
 x-source: harvest:secondary-market
+
 x-tier: profiled
+
 x-tier-reason: enrichment
+
 specificationVersion: '0.20'
+
 created: '2026-08-29'
+
 modified: '2026-08-29'
+
 tags:
 - Company
 - Sunscreen
@@ -51,6 +58,7 @@ tags:
 - Universal Commerce Protocol
 - MCP
 - GraphQL
+
 tags_raw:
 - Company
 - Sunscreen
@@ -66,57 +74,20 @@ tags_raw:
 - Universal Commerce Protocol
 - Model Context Protocol
 - GraphQL
-apis:
-- name: Supergoop! UCP Shopping MCP Server
-  description: >-
-    A live remote Model Context Protocol server implementing the Universal
-    Commerce Protocol dev.ucp.shopping service for the Supergoop! store. An
-    anonymous tools/list returns 13 tools with full JSON Schema inputSchemas
-    covering catalog search and lookup, cart, checkout and order retrieval.
-    Catalog and cart calls require a fetchable UCP agent profile URI; order calls
-    require a JWT; completing a checkout requires an idempotency key and explicit
-    human payment approval.
-  humanURL: https://supergoop.com/agents.md
-  baseURL: https://supergoop.com/api/ucp/mcp
-  tags:
-  - MCP
-  - Agentic Commerce
-  - Universal Commerce Protocol
-  - Shopping
-  - Checkout
-  properties:
-  - type: Documentation
-    url: https://supergoop.com/agents.md
-- name: Supergoop! Storefront GraphQL API
-  description: >-
-    The Shopify Storefront GraphQL API as served for supergoop.com. Introspection
-    is open and anonymous, returning 428 types, 34 root query fields and 41
-    mutations covering products, collections, search, blogs, pages, menus,
-    localization, cart lifecycle and customer accounts. Query cost is returned
-    inline on every response as extensions.cost.
-  humanURL: https://supergoop.com/agents.md
-  baseURL: https://supergoop.com/api/2026-07/graphql.json
-  tags:
-  - GraphQL
-  - Catalog
-  - Product
-  - Cart
-  - E-Commerce
-  tags_raw:
-  - GraphQL
-  - Catalog
-  - Products
-  - Cart
-  - E-Commerce
-  properties:
-  - type: GraphQL
-    url: graphql/supergoop-storefront-2026-07.graphql
+
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+
 common:
+- type: Deprecation
+  url: lifecycle/supergoop-lifecycle.yml
+- type: Hosts
+  url: hosts/supergoop-hosts.yml
+- type: Vendors
+  url: vendors/supergoop-vendors.yml
 - type: DomainSecurity
   url: security/supergoop-domain-security.yml
 - type: Website
@@ -169,20 +140,61 @@ common:
   url: examples/_index.yml
 - type: Plans
   url: plans/supergoop-plans-pricing.yml
-x-enrichment:
-  date: '2026-08-29'
-  status: enriched
-  artifacts_added: 32
-  pass: local-v1
+
+apis:
+- name: Supergoop! UCP Shopping MCP Server
+  description: A live remote Model Context Protocol server implementing the Universal Commerce Protocol dev.ucp.shopping service for the Supergoop!
+    store. An anonymous tools/list returns 13 tools with full JSON Schema inputSchemas covering catalog search and lookup, cart, checkout and
+    order retrieval. Catalog and cart calls require a fetchable UCP agent profile URI; order calls require a JWT; completing a checkout requires
+    an idempotency key and explicit human payment approval.
+  humanURL: https://supergoop.com/agents.md
+  baseURL: https://supergoop.com/api/ucp/mcp
+  tags:
+  - MCP
+  - Agentic Commerce
+  - Universal Commerce Protocol
+  - Shopping
+  - Checkout
+  properties:
+  - type: Documentation
+    url: https://supergoop.com/agents.md
+  aid: supergoop:supergoop-ucp-shopping-mcp-server
+- name: Supergoop! Storefront GraphQL API
+  description: The Shopify Storefront GraphQL API as served for supergoop.com. Introspection is open and anonymous, returning 428 types, 34 root
+    query fields and 41 mutations covering products, collections, search, blogs, pages, menus, localization, cart lifecycle and customer accounts.
+    Query cost is returned inline on every response as extensions.cost.
+  humanURL: https://supergoop.com/agents.md
+  baseURL: https://supergoop.com/api/2026-07/graphql.json
+  tags:
+  - GraphQL
+  - Catalog
+  - Product
+  - Cart
+  - E-Commerce
+  tags_raw:
+  - GraphQL
+  - Catalog
+  - Products
+  - Cart
+  - E-Commerce
+  properties:
+  - type: GraphQL
+    url: graphql/supergoop-storefront-2026-07.graphql
+  aid: supergoop:supergoop-storefront-graphql-api
+
 x-correction-request:
   requested: '2026-09-28'
   source:
   - https://github.com/api-evangelist/supergoop/pull/1
-  request: 'Verified 2026-09-28 by a fresh initialize + tools/list against https://supergoop.com/api/ucp/mcp
-    (serverInfo universal-commerce 0.1.0, anonymous): all 13 tools carry descriptions, but mcp/supergoop-mcp.yml
-    carries only our own one-line summary per tool even though mcp/supergoop-ucp-mcp-tools-list.json captured
-    the descriptions. Re-probe tools/list and add each live description beside the existing summary; the
-    PR''s 13 strings match live exactly, but take them from the probe. Note the server is served on Supergoop''s
-    domain but is Shopify''s platform UCP server (generic ''online store, hosted on Shopify'' wording,
-    shared minor-units price boilerplate) — record the descriptions as platform-authored, not Supergoop-authored.
+  request: 'Verified 2026-09-28 by a fresh initialize + tools/list against https://supergoop.com/api/ucp/mcp (serverInfo universal-commerce 0.1.0,
+    anonymous): all 13 tools carry descriptions, but mcp/supergoop-mcp.yml carries only our own one-line summary per tool even though mcp/supergoop-ucp-mcp-tools-list.json
+    captured the descriptions. Re-probe tools/list and add each live description beside the existing summary; the PR''s 13 strings match live
+    exactly, but take them from the probe. Note the server is served on Supergoop''s domain but is Shopify''s platform UCP server (generic ''online
+    store, hosted on Shopify'' wording, shared minor-units price boilerplate) — record the descriptions as platform-authored, not Supergoop-authored.
     The PR is a LintLang (Hermes Labs) automated contribution with no affiliation to Supergoop.'
+x-enrichment:
+  date: '2026-09-28'
+  status: enriched
+  artifacts_added: 4
+  pass: modular-v1
+  engine: identity=local,contract=local,surfaces=local,docs=local,regulatory=local
