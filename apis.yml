@@ -174,3 +174,15 @@ x-enrichment:
   status: enriched
   artifacts_added: 32
   pass: local-v1
+x-correction-request:
+  requested: '2026-09-28'
+  source:
+  - https://github.com/api-evangelist/supergoop/pull/1
+  request: 'Verified 2026-09-28 by a fresh initialize + tools/list against https://supergoop.com/api/ucp/mcp
+    (serverInfo universal-commerce 0.1.0, anonymous): all 13 tools carry descriptions, but mcp/supergoop-mcp.yml
+    carries only our own one-line summary per tool even though mcp/supergoop-ucp-mcp-tools-list.json captured
+    the descriptions. Re-probe tools/list and add each live description beside the existing summary; the
+    PR''s 13 strings match live exactly, but take them from the probe. Note the server is served on Supergoop''s
+    domain but is Shopify''s platform UCP server (generic ''online store, hosted on Shopify'' wording,
+    shared minor-units price boilerplate) — record the descriptions as platform-authored, not Supergoop-authored.
+    The PR is a LintLang (Hermes Labs) automated contribution with no affiliation to Supergoop.'
