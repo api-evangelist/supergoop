@@ -1,0 +1,16 @@
+generated: '2026-10-12'
+method: none
+source:
+- https://zapier.com/apps/supergoop/integrations
+- https://n8n.io/integrations/supergoop/
+- https://composio.dev/toolkits/supergoop
+- https://monid.ai/tools/supergoop
+checked:
+- https://composio.dev/toolkits/supergoop
+- https://monid.ai/tools/supergoop
+- https://n8n.io/integrations/supergoop/
+- https://zapier.com/apps/supergoop/integrations
+summary: null
+marketplace_apps: []
+edges: []
+templates: []
